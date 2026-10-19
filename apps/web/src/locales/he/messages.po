@@ -1381,9 +1381,9 @@ msgstr "המשך עם אימייל"
 msgid "Copied"
 msgstr "הועתק"
 
+#: src/components/MessageHoverActions.tsx
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/Onboarding.tsx
-#: src/pages/Shell.tsx
 msgid "Copy"
 msgstr "העתקה"
 
@@ -2615,7 +2615,7 @@ msgstr "תדירות"
 msgid "How to check"
 msgstr "איך לבדוק"
 
-#: src/pages/Shell.tsx
+#: src/components/ComputerReleaseActions.tsx
 msgid "I’m done"
 msgstr "סיימתי"
 
@@ -3144,7 +3144,7 @@ msgstr "חודש"
 msgid "Monthly"
 msgstr "חודשי"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "More"
 msgstr "עוד"
 
@@ -3715,11 +3715,11 @@ msgstr "בתור"
 msgid "Quote"
 msgstr "ציטוט"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "React"
 msgstr "הוספת אמוג׳י"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "Reactions"
 msgstr "אמוג׳י"
 
@@ -3835,7 +3835,7 @@ msgstr "ההרשמה סגורה"
 msgid "Release computer"
 msgstr "שחרור המחשב"
 
-#: src/pages/Shell.tsx
+#: src/components/ComputerReleaseActions.tsx
 msgid "Release control"
 msgstr "שחרור השליטה"
 
@@ -3946,7 +3946,7 @@ msgstr "החלפת מפתח"
 msgid "Replace value"
 msgstr "החלפת ערך"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "Reply"
 msgstr "תשובה"
 
@@ -4440,8 +4440,8 @@ msgstr "אתר"
 msgid "Skill {0}"
 msgstr "מיומנות {0}"
 
+#: src/components/ComputerReleaseActions.tsx
 #: src/components/integrations/IntegrationSetup.tsx
-#: src/pages/Shell.tsx
 msgid "Skip"
 msgstr "דילוג"
 
