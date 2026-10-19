@@ -125,10 +125,10 @@ import type { ThreadComposerHandle } from "../components/thread-composer";
 import { ThreadComposer } from "../components/thread-composer";
 import { ThreadErrorNotice } from "../components/thread-error-notice";
 import { createThreadHeaderStyles } from "../components/thread-header-styles";
+import type { MessageActionProps } from "../components/thread-message-parts";
 import {
   AgentEventLabel,
   AskBlock,
-  type MessageActionProps,
   MessageTextCard,
   QuoteSheet,
 } from "../components/thread-message-parts";

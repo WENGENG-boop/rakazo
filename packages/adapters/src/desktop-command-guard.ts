@@ -208,32 +208,56 @@ function literalAssignmentValue(raw: string): string | undefined {
 }
 
 function parseAssignment(raw: string): AssignmentEntry | undefined {
-  const match = /^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/s.exec(raw);
-  if (!match) return undefined;
-  return { name: match[1] ?? "", value: literalAssignmentValue(match[2] ?? "") ?? null };
+  if (raw.startsWith("'") || raw.startsWith('"')) return undefined;
+  const append = /^([A-Za-z_][A-Za-z0-9_]*)\+=/.exec(raw);
+  if (append?.[1]) return { name: append[1], value: null };
+  const match = /^([A-Za-z_][A-Za-z0-9_]*)=/.exec(raw);
+  if (!match?.[1]) return undefined;
+  const value = literalAssignmentValue(raw.slice(match[0].length));
+  return { name: match[1], value: value ?? null };
 }
 
 function assignmentEntries(words: readonly string[]): AssignmentEntry[] | undefined {
+  if (words.length === 0) return undefined;
+  let index = 0;
+  if (literalCommandToken(words[0] ?? "") === "export") index = 1;
+  if (index >= words.length) return undefined;
   const entries: AssignmentEntry[] = [];
-  for (const word of words) {
-    const entry = parseAssignment(word);
-    if (!entry) break;
-    entries.push(entry);
+  for (; index < words.length; index += 1) {
+    const parsed = parseAssignment(words[index] ?? "");
+    if (!parsed) return undefined;
+    entries.push(parsed);
   }
-  return entries.length > 0 ? entries : undefined;
+  return entries;
 }
 
 function isRawAssignment(raw: string): boolean {
-  return /^[A-Za-z_][A-Za-z0-9_]*=/.test(raw);
+  return /^[A-Za-z_][A-Za-z0-9_]*(?:\+?=)/.test(raw);
 }
 
 function primaryCommandIndex(words: readonly string[]): number | undefined {
-  for (let index = 0; index < words.length; index += 1) {
+  let index = 0;
+  while (index < words.length) {
     const raw = words[index] ?? "";
-    if (isRawAssignment(raw)) continue;
-    if (COMMAND_WRAPPERS.has(raw)) {
+    if (isRawAssignment(raw)) {
       index += 1;
-      while (words[index]?.startsWith("-")) index += 1;
+      continue;
+    }
+    const text = literalCommandToken(raw);
+    if (text === undefined) return undefined;
+    if (text === "!") {
+      index += 1;
+      continue;
+    }
+    const base = text.split("/").at(-1) ?? text;
+    if (COMMAND_WRAPPERS.has(base)) {
+      index += 1;
+      while (
+        index < words.length &&
+        (literalCommandToken(words[index] ?? "") ?? "").startsWith("-")
+      ) {
+        index += 1;
+      }
       continue;
     }
     return index;
@@ -242,9 +266,10 @@ function primaryCommandIndex(words: readonly string[]): number | undefined {
 }
 
 function commandBasename(words: readonly string[]): string | undefined {
-  const index = primaryCommandIndex(words);
-  if (index === undefined) return undefined;
-  const text = literalCommandToken(words[index] ?? "");
+  if (words.length === 0 || assignmentEntries(words)) return undefined;
+  const commandIndex = primaryCommandIndex(words);
+  if (commandIndex === undefined) return "";
+  const text = literalCommandToken(words[commandIndex] ?? "");
   if (!text) return "";
   return (text.split("/").at(-1) ?? "").toLowerCase();
 }

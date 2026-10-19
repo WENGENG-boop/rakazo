@@ -202,6 +202,30 @@ describe("computer lifecycle command guard", () => {
     ).toBe(undefined);
   });
 
+  it("inspects the command after a wrapper instead of its first operand", () => {
+    expect(
+      protectedComputerLifecycleRefusal(
+        "command cp /tmp/evil venv/bin/activate; source venv/bin/activate",
+      ),
+    ).toBe("activate script");
+    expect(protectedComputerLifecycleRefusal("command pkill chromium")).toBe(
+      "protected command pkill",
+    );
+    expect(protectedComputerLifecycleRefusal("env pkill chromium")).toBe("protected command pkill");
+  });
+
+  it("invalidates tracked values on append assignments", () => {
+    expect(protectedComputerLifecycleRefusal("cmd=k; cmd+=ill; $cmd -9 1234")).toBe(
+      "unresolved variable $cmd",
+    );
+  });
+
+  it("does not persist command-scoped assignment prefixes", () => {
+    expect(
+      protectedComputerLifecycleRefusal("cmd=kill; cmd=echo /usr/bin/true; $cmd -9 1234"),
+    ).toBe("protected command kill");
+  });
+
   it("drops a tracked literal when a later command can assign that name", () => {
     for (const command of [
       "dir=x; declare dir=pkill; $dir chromium",
