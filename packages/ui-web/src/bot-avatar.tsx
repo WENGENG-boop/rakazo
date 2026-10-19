@@ -13,6 +13,7 @@ import {
   SHIPPED_BOT_AVATAR_VIEWBOX,
   shippedBotAvatarShapePath,
   shippedHash,
+  UNKNOWN_BOT_COLOR,
 } from "@rakazo/core";
 import { tokens } from "@rakazo/ui-tokens";
 import type { CSSProperties } from "react";
@@ -23,7 +24,13 @@ import { cn } from "./lib/utils.js";
 import "./styles.css";
 
 export type { GrokColorDef };
-export { DEFAULT_GROK_BOT_COLOR, GROK_BOT_COLORS, GROK_COLOR_LIST, resolvePersonaColorDef };
+export {
+  DEFAULT_GROK_BOT_COLOR,
+  GROK_BOT_COLORS,
+  GROK_COLOR_LIST,
+  resolvePersonaColorDef,
+  UNKNOWN_BOT_COLOR,
+};
 
 export const GROK_SHAPES = SHIPPED_BOT_AVATAR_SHAPES;
 export const SHIPPED_SHAPE_KEYS = SHIPPED_BOT_AVATAR_SHAPE_KEYS;

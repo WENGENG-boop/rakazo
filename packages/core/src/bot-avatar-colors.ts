@@ -103,6 +103,9 @@ export const GROK_BOT_COLORS = GROK_COLOR_LIST.map((c) => c.hex);
 /** Shared identity color for Avatar Studio reset/fallback (Executive Violet). */
 export const DEFAULT_GROK_BOT_COLOR = GROK_COLOR_LIST.find((color) => color.id === "violet")!.hex;
 
+/** Identity color for a bot the current roster can no longer resolve. */
+export const UNKNOWN_BOT_COLOR = "#85858A";
+
 export function shippedHash(value: string): number {
   let hash = 2166136261;
   for (let index = 0; index < value.length; index += 1) {

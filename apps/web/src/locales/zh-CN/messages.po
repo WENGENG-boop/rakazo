@@ -1381,9 +1381,9 @@ msgstr "使用邮箱继续"
 msgid "Copied"
 msgstr ""
 
+#: src/components/MessageHoverActions.tsx
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/Onboarding.tsx
-#: src/pages/Shell.tsx
 msgid "Copy"
 msgstr "复制"
 
@@ -2615,7 +2615,7 @@ msgstr "频率"
 msgid "How to check"
 msgstr "如何检查"
 
-#: src/pages/Shell.tsx
+#: src/components/ComputerReleaseActions.tsx
 msgid "I’m done"
 msgstr "我做完了"
 
@@ -3144,7 +3144,7 @@ msgstr ""
 msgid "Monthly"
 msgstr "每月"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "More"
 msgstr ""
 
@@ -3715,11 +3715,11 @@ msgstr "排队中"
 msgid "Quote"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "React"
 msgstr "回应"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "Reactions"
 msgstr "表情回应"
 
@@ -3835,7 +3835,7 @@ msgstr "注册已关闭"
 msgid "Release computer"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/ComputerReleaseActions.tsx
 msgid "Release control"
 msgstr "交还控制权"
 
@@ -3946,7 +3946,7 @@ msgstr "替换密钥"
 msgid "Replace value"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "Reply"
 msgstr "回复"
 
@@ -4440,8 +4440,8 @@ msgstr ""
 msgid "Skill {0}"
 msgstr "技能 {0}"
 
+#: src/components/ComputerReleaseActions.tsx
 #: src/components/integrations/IntegrationSetup.tsx
-#: src/pages/Shell.tsx
 msgid "Skip"
 msgstr "跳过"
 

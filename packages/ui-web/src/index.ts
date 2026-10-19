@@ -9,6 +9,7 @@ export {
   parseBotAvatar,
   resolvePersonaColorDef,
   resolvePersonaShape,
+  UNKNOWN_BOT_COLOR,
   Wordmark,
 } from "./bot-avatar.js";
 export * from "./components/ui/alert-dialog.js";

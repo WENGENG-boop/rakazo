@@ -1381,9 +1381,9 @@ msgstr "Continuar con el correo"
 msgid "Copied"
 msgstr ""
 
+#: src/components/MessageHoverActions.tsx
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/Onboarding.tsx
-#: src/pages/Shell.tsx
 msgid "Copy"
 msgstr "Copiar"
 
@@ -2615,7 +2615,7 @@ msgstr "Con qué frecuencia"
 msgid "How to check"
 msgstr "Cómo comprobar"
 
-#: src/pages/Shell.tsx
+#: src/components/ComputerReleaseActions.tsx
 msgid "I’m done"
 msgstr "Listo"
 
@@ -3144,7 +3144,7 @@ msgstr ""
 msgid "Monthly"
 msgstr "Mensual"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "More"
 msgstr ""
 
@@ -3715,11 +3715,11 @@ msgstr "En cola"
 msgid "Quote"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "React"
 msgstr "Reaccionar"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "Reactions"
 msgstr "Reacciones"
 
@@ -3835,7 +3835,7 @@ msgstr "El registro está cerrado"
 msgid "Release computer"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/ComputerReleaseActions.tsx
 msgid "Release control"
 msgstr "Ceder el control"
 
@@ -3946,7 +3946,7 @@ msgstr "Reemplazar clave"
 msgid "Replace value"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "Reply"
 msgstr "Responder"
 
@@ -4440,8 +4440,8 @@ msgstr ""
 msgid "Skill {0}"
 msgstr "Habilidad {0}"
 
+#: src/components/ComputerReleaseActions.tsx
 #: src/components/integrations/IntegrationSetup.tsx
-#: src/pages/Shell.tsx
 msgid "Skip"
 msgstr "Omitir"
 

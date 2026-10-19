@@ -1381,9 +1381,9 @@ msgstr "Продолжить по электронной почте"
 msgid "Copied"
 msgstr ""
 
+#: src/components/MessageHoverActions.tsx
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/Onboarding.tsx
-#: src/pages/Shell.tsx
 msgid "Copy"
 msgstr "Копировать"
 
@@ -2615,7 +2615,7 @@ msgstr "Как часто"
 msgid "How to check"
 msgstr "Как проверить"
 
-#: src/pages/Shell.tsx
+#: src/components/ComputerReleaseActions.tsx
 msgid "I’m done"
 msgstr "Готово"
 
@@ -3144,7 +3144,7 @@ msgstr ""
 msgid "Monthly"
 msgstr "Ежемесячно"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "More"
 msgstr "Ещё"
 
@@ -3715,11 +3715,11 @@ msgstr "В очереди"
 msgid "Quote"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "React"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "Reactions"
 msgstr ""
 
@@ -3835,7 +3835,7 @@ msgstr "Регистрация закрыта"
 msgid "Release computer"
 msgstr "Освободить компьютер"
 
-#: src/pages/Shell.tsx
+#: src/components/ComputerReleaseActions.tsx
 msgid "Release control"
 msgstr "Передать управление"
 
@@ -3946,7 +3946,7 @@ msgstr "Заменить ключ"
 msgid "Replace value"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "Reply"
 msgstr "Ответить"
 
@@ -4440,8 +4440,8 @@ msgstr ""
 msgid "Skill {0}"
 msgstr "Навык {0}"
 
+#: src/components/ComputerReleaseActions.tsx
 #: src/components/integrations/IntegrationSetup.tsx
-#: src/pages/Shell.tsx
 msgid "Skip"
 msgstr "Пропустить"
 

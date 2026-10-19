@@ -1381,9 +1381,9 @@ msgstr "E-posta ile devam et"
 msgid "Copied"
 msgstr ""
 
+#: src/components/MessageHoverActions.tsx
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/Onboarding.tsx
-#: src/pages/Shell.tsx
 msgid "Copy"
 msgstr "Kopyala"
 
@@ -2615,7 +2615,7 @@ msgstr "Ne sıklıkla"
 msgid "How to check"
 msgstr "Nasıl kontrol edilir"
 
-#: src/pages/Shell.tsx
+#: src/components/ComputerReleaseActions.tsx
 msgid "I’m done"
 msgstr "Bitirdim"
 
@@ -3144,7 +3144,7 @@ msgstr ""
 msgid "Monthly"
 msgstr "Aylık"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "More"
 msgstr ""
 
@@ -3715,11 +3715,11 @@ msgstr "Kuyrukta"
 msgid "Quote"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "React"
 msgstr "Tepki ver"
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "Reactions"
 msgstr "Tepkiler"
 
@@ -3835,7 +3835,7 @@ msgstr "Kayıt kapalı"
 msgid "Release computer"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/ComputerReleaseActions.tsx
 msgid "Release control"
 msgstr "Kontrolü bırak"
 
@@ -3946,7 +3946,7 @@ msgstr "Anahtarı değiştir"
 msgid "Replace value"
 msgstr ""
 
-#: src/pages/Shell.tsx
+#: src/components/MessageHoverActions.tsx
 msgid "Reply"
 msgstr "Yanıtla"
 
@@ -4440,8 +4440,8 @@ msgstr ""
 msgid "Skill {0}"
 msgstr "Beceri: {0}"
 
+#: src/components/ComputerReleaseActions.tsx
 #: src/components/integrations/IntegrationSetup.tsx
-#: src/pages/Shell.tsx
 msgid "Skip"
 msgstr "Atla"
 

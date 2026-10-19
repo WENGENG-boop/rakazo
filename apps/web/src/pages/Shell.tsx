@@ -30,8 +30,6 @@ import {
   ATTACHMENT_MAX_COUNT,
   attachmentMaxBytes,
   attachmentSizeLabel,
-  canReactToThreadMessage,
-  MESSAGE_REACTIONS,
   normalizeCreateBotProfile,
 } from "@rakazo/contracts";
 import type { ComposerMention, FoldedTranscript, SlashActionId } from "@rakazo/core";
@@ -86,6 +84,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   resolvePersonaColorDef,
+  UNKNOWN_BOT_COLOR,
 } from "@rakazo/ui-web";
 import {
   ArrowDown,
@@ -94,8 +93,6 @@ import {
   Box,
   ChevronDown,
   CircleAlert,
-  Clock,
-  Copy,
   FolderOpen,
   Gauge,
   LayoutGrid,
@@ -111,11 +108,8 @@ import {
   Pencil,
   Phone,
   Plus,
-  Puzzle,
-  Reply,
   Search,
   Settings,
-  Smile,
   Square,
   SquareKanban,
   TextQuote,
@@ -143,6 +137,7 @@ import { AskCard } from "../components/AskCard";
 import { ActiveBotGlyph, CollaborationMarker } from "../components/ai/CollaborationMarker";
 import { CloudAgentCard } from "../components/CloudAgentCard";
 import { ComputerMaintenanceActions } from "../components/ComputerMaintenanceActions";
+import { ComputerReleaseActions } from "../components/ComputerReleaseActions";
 import {
   ComputersUnavailableHint,
   computersAreUnavailable,
@@ -158,7 +153,8 @@ import {
 } from "../components/composer/HoldToTalk";
 import { ComputerWorkspace } from "../components/computer/ComputerWorkspace";
 import { lazyOverlay } from "../components/ErrorBoundary";
-import { MessageHoverMetadata } from "../components/MessageHoverMetadata";
+import { MentionChipIcon, MentionOptionIcon } from "../components/MentionIcon";
+import { MessageHoverActions } from "../components/MessageHoverActions";
 import {
   LIVE_TOOL_STEP_WINDOW,
   StandaloneToolActivity,
@@ -220,7 +216,6 @@ import { publishComputerCommand } from "../lib/computer-workspace";
 import { desktopBridge } from "../lib/desktop";
 import { scheduleFocusPrompt } from "../lib/focus-prompt";
 import { localTimezone } from "../lib/local-timezone";
-import { copyableMessageText } from "../lib/message-text";
 import { messageProviderLabel } from "../lib/messaging";
 import { parseModelOptionKey } from "../lib/model-catalog";
 import {
@@ -365,8 +360,6 @@ type PendingBrowserNotification = {
 };
 
 const ATTACHMENT_ACCEPT = [...ATTACHMENT_ALLOWED_MIME_TYPES, ".zip"].join(",");
-/** Identity colour for bots the roster no longer knows about. */
-const FALLBACK_BOT_COLOR = "#85858A";
 const THREAD_SNAPSHOT_TIMEOUT_MS = 2_000;
 /** Bound Settings leave so a hung voice status refresh cannot block dismissal. */
 const VOICE_STATUS_REFRESH_TIMEOUT_MS = 10_000;
@@ -2067,7 +2060,7 @@ function SpaceShell() {
     const bot = resolveTranscriptBot(run.botId);
     return {
       botId: run.botId,
-      color: bot?.color ?? FALLBACK_BOT_COLOR,
+      color: bot?.color ?? UNKNOWN_BOT_COLOR,
       name: bot?.name,
       status: run.status,
     };
@@ -5033,7 +5026,7 @@ function SpaceShell() {
             peerBotId={peerConversation.peerBotId}
             peerBotName={peerConversation.peerBotName}
             peerBotColor={
-              resolveTranscriptBot(peerConversation.peerBotId)?.color ?? FALLBACK_BOT_COLOR
+              resolveTranscriptBot(peerConversation.peerBotId)?.color ?? UNKNOWN_BOT_COLOR
             }
             onClose={() => setPeerConversation(null)}
           />
@@ -6813,47 +6806,6 @@ function slashActionLabel(id: SlashActionId) {
   }
 }
 
-function MentionOptionIcon({ mention }: { mention: ComposerMention }) {
-  if (mention.kind === "routine") {
-    return <Clock size={16} strokeWidth={1.7} className="mt-0.5 shrink-0 text-muted-foreground" />;
-  }
-  if (mention.kind === "connector") {
-    return <Puzzle size={16} strokeWidth={1.7} className="mt-0.5 shrink-0 text-muted-foreground" />;
-  }
-  if (mention.kind === "group") {
-    return (
-      <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-accent text-[9px] text-foreground/75">
-        G
-      </span>
-    );
-  }
-  if (mention.kind === "everyone") {
-    return (
-      <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-accent text-[9px] text-foreground/75">
-        @
-      </span>
-    );
-  }
-  return <BotAvatar color={mention.color ?? FALLBACK_BOT_COLOR} identity={mention.id} size={16} />;
-}
-
-function MentionChipIcon({ mention }: { mention: ComposerMention }) {
-  if (mention.kind === "routine") {
-    return <Clock size={13} strokeWidth={1.7} className="shrink-0 text-muted-foreground/70" />;
-  }
-  if (mention.kind === "connector") {
-    return <Puzzle size={13} strokeWidth={1.7} className="shrink-0 text-muted-foreground/70" />;
-  }
-  if (mention.kind === "group" || mention.kind === "everyone") {
-    return (
-      <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-accent text-[9px] text-foreground/75">
-        {mention.kind === "group" ? "G" : "@"}
-      </span>
-    );
-  }
-  return <BotAvatar color={mention.color ?? FALLBACK_BOT_COLOR} identity={mention.id} size={16} />;
-}
-
 function previewMessageText(message: ThreadMessage): string {
   const text = message.blocks
     .map((block) => {
@@ -6904,111 +6856,6 @@ function formatRosterTime(isoDate?: string | null): string {
   }
 }
 
-function MessageHoverActions({
-  message,
-  side,
-  onReply,
-  onReact,
-}: {
-  message: ThreadMessage;
-  side: "start" | "end";
-  onReply: (message: ThreadMessage) => void;
-  onReact: (message: ThreadMessage, reaction: MessageReaction) => Promise<void>;
-}) {
-  const { t } = useLingui();
-  const [moreOpen, setMoreOpen] = useState(false);
-  const [reactionsOpen, setReactionsOpen] = useState(false);
-
-  // Streaming progress bubbles keep hover free for selection / stop clicks.
-  if (message.id.startsWith("progress:")) return null;
-
-  function copyMessage() {
-    const text = copyableMessageText(message);
-    if (!text || !navigator.clipboard) return;
-    void navigator.clipboard.writeText(text).catch(() => undefined);
-  }
-
-  const iconButtonClass =
-    "grid h-7 w-7 place-items-center text-muted-foreground transition-colors hover:text-foreground";
-
-  return (
-    <MessageHoverMetadata pinned={moreOpen || reactionsOpen} side={side}>
-      <div data-testid="message-hover-actions" className="flex items-center gap-0.5">
-        {canReactToThreadMessage(message) ? (
-          <Popover open={reactionsOpen} onOpenChange={setReactionsOpen}>
-            <PopoverTrigger
-              aria-label={t`React`}
-              className={cn(
-                iconButtonClass,
-                "h-11 w-11 [@media(hover:hover)_and_(pointer:fine)]:h-7 [@media(hover:hover)_and_(pointer:fine)]:w-7",
-              )}
-            >
-              <Smile size={15} strokeWidth={1.7} />
-            </PopoverTrigger>
-            <PopoverContent
-              align={side === "end" ? "start" : "end"}
-              className="w-auto flex-row gap-0 rounded-2xl p-1.5"
-              aria-label={t`Reactions`}
-            >
-              {MESSAGE_REACTIONS.map((emoji) => (
-                <button
-                  key={emoji}
-                  type="button"
-                  aria-label={emoji}
-                  className="grid h-11 w-11 place-items-center rounded-xl text-2xl hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring"
-                  onClick={() => {
-                    setReactionsOpen(false);
-                    void onReact(message, emoji);
-                  }}
-                >
-                  {emoji}
-                </button>
-              ))}
-            </PopoverContent>
-          </Popover>
-        ) : null}
-        <button
-          type="button"
-          aria-label={t`Reply`}
-          onClick={() => onReply(message)}
-          className={cn(
-            iconButtonClass,
-            "h-11 w-11 [@media(hover:hover)_and_(pointer:fine)]:h-7 [@media(hover:hover)_and_(pointer:fine)]:w-7",
-          )}
-        >
-          <Reply size={15} strokeWidth={1.7} />
-        </button>
-        <DropdownMenu open={moreOpen} onOpenChange={setMoreOpen}>
-          <DropdownMenuTrigger
-            aria-label={t`More`}
-            className={cn(
-              iconButtonClass,
-              "h-11 w-11 [@media(hover:hover)_and_(pointer:fine)]:h-7 [@media(hover:hover)_and_(pointer:fine)]:w-7",
-            )}
-          >
-            <MoreHorizontal size={15} strokeWidth={1.7} />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align={side === "end" ? "start" : "end"}>
-            <DropdownMenuItem
-              onClick={() => {
-                setMoreOpen(false);
-                onReply(message);
-              }}
-            >
-              <Reply size={14} strokeWidth={1.7} />
-              <Trans>Reply</Trans>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={copyMessage}>
-              <Copy size={14} strokeWidth={1.7} />
-              <Trans>Copy</Trans>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </MessageHoverMetadata>
-  );
-}
-
 function firstThreadRoute(
   bots: readonly Pick<Bot, "id">[],
   groups: readonly Pick<Group, "id">[],
@@ -7034,32 +6881,6 @@ function applyThreadEvent(
     const next = reduceComputerStatus(computerRef.current, event);
     commitComputer(next);
   }
-}
-
-function ComputerReleaseActions({
-  takeoverRequested,
-  onRelease,
-}: {
-  takeoverRequested: boolean;
-  onRelease: (reason?: ComputerReleaseReason) => Promise<void>;
-}) {
-  if (!takeoverRequested) {
-    return (
-      <Button type="button" variant="outline" size="sm" onClick={() => void onRelease()}>
-        <Trans>Release control</Trans>
-      </Button>
-    );
-  }
-  return (
-    <div className="flex items-center gap-2">
-      <Button type="button" variant="outline" size="sm" onClick={() => void onRelease("skipped")}>
-        <Trans>Skip</Trans>
-      </Button>
-      <Button type="button" size="sm" onClick={() => void onRelease("done")}>
-        <Trans>I’m done</Trans>
-      </Button>
-    </div>
-  );
 }
 
 const MessageView = memo(function MessageView({
@@ -7134,7 +6955,7 @@ const MessageView = memo(function MessageView({
           style={{ color: speakerColorDef.light }}
         >
           <BotAvatar
-            color={speakerBot?.color ?? FALLBACK_BOT_COLOR}
+            color={speakerBot?.color ?? UNKNOWN_BOT_COLOR}
             identity={message.botId}
             size={22}
           />
@@ -7259,7 +7080,7 @@ const MessageView = memo(function MessageView({
             <CollaborationMarker
               key={i}
               ariaLabel={label}
-              color={peerBot(peerBotId)?.color ?? FALLBACK_BOT_COLOR}
+              color={peerBot(peerBotId)?.color ?? UNKNOWN_BOT_COLOR}
               identity={peerBotId}
               label={label}
               onClick={() => onOpenPeerMessages({ peerBotId, peerBotName: peer })}
