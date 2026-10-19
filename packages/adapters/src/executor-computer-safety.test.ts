@@ -411,6 +411,7 @@ describe("computer lifecycle command guard", () => {
       "$(printf p)$(printf k)$(printf i)$(printf l)$(printf l) chromium",
       "$(printf s)$(printf y)$(printf s)$(printf t)$(printf e)$(printf m)$(printf c)$(printf t)$(printf l) restart chromium",
       "rm -f $(printf /)$(printf t)$(printf m)$(printf p)$(printf /)$(printf .)$(printf x)$(printf 1)-lock",
+      "rm -f $(printf /)$(printf t)$(printf m)$(printf p)$(printf /)$(printf .)$(printf X)$(printf 1)-lock",
     ]) {
       expect(protectedComputerLifecycleRefusal(`cat > /tmp/x.sh <<'EOF'\n${body}\nEOF`), body).toBe(
         "heredoc",

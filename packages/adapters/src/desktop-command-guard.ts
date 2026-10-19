@@ -1309,21 +1309,22 @@ function consumeXLock(states: Set<string>, text: string): boolean {
 }
 
 /** `/tmp/.x<digits>-lock` assembled from the visible pieces. */
-function spliceContainsXLock(pieces: readonly SplicePiece[]): boolean {
+function spliceContainsXLock(
+  segments: readonly string[],
+  holes: readonly (readonly string[])[],
+): boolean {
   let states = new Set<string>(["0,0,0"]);
-  for (const piece of pieces) {
-    if (consumeXLock(states, piece.segments[0] ?? "")) return true;
-    for (let index = 0; index < piece.holes.length; index += 1) {
-      const start = new Set(states);
-      const merged = new Set<string>();
-      for (const insert of piece.holes[index] ?? [""]) {
-        const clone = new Set(start);
-        if (consumeXLock(clone, insert)) return true;
-        for (const state of clone) merged.add(state);
-      }
-      states = merged;
-      if (consumeXLock(states, piece.segments[index + 1] ?? "")) return true;
+  if (consumeXLock(states, segments[0] ?? "")) return true;
+  for (let index = 0; index < holes.length; index += 1) {
+    const start = new Set(states);
+    const merged = new Set<string>();
+    for (const insert of holes[index] ?? [""]) {
+      const clone = new Set(start);
+      if (consumeXLock(clone, insert)) return true;
+      for (const state of clone) merged.add(state);
     }
+    states = merged;
+    if (consumeXLock(states, segments[index + 1] ?? "")) return true;
   }
   return false;
 }
@@ -1358,7 +1359,7 @@ function overflowLifecycle(piece: SplicePiece): {
       return { hazard: true, service: false, action: false };
     }
   }
-  if (spliceContainsXLock([piece])) return { hazard: true, service: false, action: false };
+  if (spliceContainsXLock(segments, holes)) return { hazard: true, service: false, action: false };
   return {
     hazard: false,
     service: ["systemctl", "service"].some((name) => basenamePossible(segments, holes, name)),

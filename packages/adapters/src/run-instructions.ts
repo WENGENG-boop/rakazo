@@ -26,6 +26,8 @@ const VOICE_CALL_BASE_INSTRUCTION =
 export const VOICE_CALL_INSTRUCTION = `${VOICE_CALL_BASE_INSTRUCTION} If the user asks to end the call or hang up, or the conversation is finished, call end_call with a short title and a one-sentence farewell instead of saying goodbye in text, then do any remaining work as a normal chat reply.`;
 
 const FLEET_TOOL_NAMES_SET: ReadonlySet<string> = new Set(FLEET_TOOL_NAMES);
+const UNAVAILABLE_ATTACHMENT_INSTRUCTION =
+  "An attachment in this message could not be loaded. Tell the user the attachment was unavailable and do not guess its contents.";
 
 export function selectBuiltinToolsForRun(options: {
   ticketBoardEnabled?: boolean;
@@ -691,9 +693,7 @@ export function missingTurnImagesInstruction(
 ): string {
   const expected = blocks?.filter((block) => block.kind === "image").length ?? 0;
   const loaded = images?.length ?? 0;
-  return expected > 0 && loaded < expected
-    ? "An attachment in this message could not be loaded. Tell the user the attachment was unavailable and do not guess its contents."
-    : "";
+  return expected > 0 && loaded < expected ? UNAVAILABLE_ATTACHMENT_INSTRUCTION : "";
 }
 
 export async function settleSteeringAttachmentLoads<TImage, TFile>(
@@ -721,9 +721,7 @@ export async function settleSteeringAttachmentLoads<TImage, TFile>(
   return {
     images: loadedImages.status === "fulfilled" ? loadedImages.value : undefined,
     files: loadedFiles.status === "fulfilled" ? loadedFiles.value : [],
-    unavailableInstruction: unavailable
-      ? "An attachment in this message could not be loaded. Tell the user the attachment was unavailable and do not guess its contents."
-      : "",
+    unavailableInstruction: unavailable ? UNAVAILABLE_ATTACHMENT_INSTRUCTION : "",
   };
 }
 
